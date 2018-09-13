@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+<title>js 语言包测试</title>
+<style>
+.zh .zh_png{
+	display:block;
+}
+.zh .en_png{
+	display:none;
+}
+.en .zh_png{
+	display:none;
+}
+.en .en_png{
+	display:block;
+}
+ 
+.img_bg{
+	background-position:0 0;
+	width:30px;
+	height:30px;
+}
+.zh .img_bg{
+	background-image:url('img/img_bg_zh.png');
+}
+.en .img_bg{
+	background-image:url('img/img_bg_en.png');
+}
+</style>
+</head>
+ 
+<body class="zh">
+<div class="wrap">
+	<h1 data-lang="string_lang1">标题</h1>
+	<p data-lang="string_lang2">段落内容，balabala</p>
+    <ul class="nav">
+    	<li><a data-lang="string_lang3">导航1</a></li>
+        <li><a data-lang="string_lang4">导航2</a></li>
+        <li><a data-lang="string_lang5">导航3</a></li>
+        <li><a data-lang="string_lang6">导航4</a></li>
+    </ul>
+	<img class="zh_png" style="width:200px;height: 100px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1536835767964&di=e7ece151f24cba3b0dcd5d6bb6d670fe&imgtype=0&src=http%3A%2F%2Fpic.syd.com.cn%2F0%2F100%2F92%2F05%2F100920530_0000000039b30f2e.jpg" />
+	<img class="en_png" style="width:200px;height: 100px;" src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1536835719885&di=30396fa8c7001754716ab840566afecc&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2F9922720e0cf3d7cac260774df91fbe096b63a973.jpg" />
+    <div class="screen1">
+    	<div class="inner">
+        	<h1 data-lang="string_lang7">第一屏</h1>
+        	<p data-lang="string_lang8">第一屏内容</p>
+        </div>
+    </div>
+	<div class="img_bg"></div>
+</div>
+<a id="J_lang_switch" data-lang="string_lang9">切换到英文</a>
+<script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js">
+</script>
+<script src="js/jquery.i18n.properties-1.0.9.js"></script>
+<script>
+var language_pack = {
+	now_lang : 0, // 0:ch,1:en
+	loadProperties : function(new_lang){
+		var self = this;
+		var tmp_lang = '';
+		if(new_lang == 0){
+			tmp_lang = 'zh';
+			$('body').removeClass('en').addClass('zh');
+		}else{
+			tmp_lang = 'en';
+			$('body').removeClass('zh').addClass('en');
+		}
+		jQuery.i18n.properties({//加载资浏览器语言对应的资源文件
+			name: 'strings', //资源文件名称
+			path:'language/', //资源文件路径
+			language: tmp_lang,
+			cache: false,
+			mode:'map', //用Map的方式使用资源文件中的值
+			callback: function() {//加载成功后设置显示内容
+				for(var i in $.i18n.map){
+					$('[data-lang="'+i+'"]').text($.i18n.map[i]);
+				}
+				document.title = $.i18n.map['string_title'];
+			}
+		});
+		self.now_lang = new_lang;
+	}
+}
+$(document).ready(function(){
+	language_pack.loadProperties(0);
+	
+	$('#J_lang_switch').click(function(){
+		var new_lang;
+		if(language_pack.now_lang == 0){
+			new_lang = 1;
+		}else{
+			new_lang = 0;
+		}
+		language_pack.loadProperties(new_lang);
+	});
+});
+</script>
+</body>
+</html>
